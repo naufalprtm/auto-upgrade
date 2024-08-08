@@ -43,8 +43,8 @@ This script is designed to update and upgrade various system packages and softwa
 1. **Clone the repository:**
 
    ```sh
-   git clone https://github.com/yourusername/auto-upgrade-installer.git
-   cd auto-upgrade-installer
+   git clone https://github.com/naufalprtm/auto-upgrade.git
+   cd auto-upgrade
    ```
    
 Make the script executable:
