@@ -1,318 +1,383 @@
 #!/bin/bash
 
-# Fungsi untuk mencetak pesan dengan warna
+LANGUAGE="en"
+NC='\033[0m' # No Color
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 print_message() {
     local message=$1
-    local color=$2
-    case $color in
-        "red") echo -e "\e[31m${message}\e[0m" ;;
-        "green") echo -e "\e[32m${message}\e[0m" ;;
-        "yellow") echo -e "\e[33m${message}\e[0m" ;;
-        "blue") echo -e "\e[34m${message}\e[0m" ;;
-        "magenta") echo -e "\e[35m${message}\e[0m" ;;
-        "cyan") echo -e "\e[36m${message}\e[0m" ;;
-        "white") echo -e "\e[37m${message}\e[0m" ;;
-        *) echo "$message" ;;
+    local status=$2
+    case $LANGUAGE in
+        "en")
+            case $status in
+                "check") echo -e "\e[32m✔ $message is already installed\e[0m" ;;
+                "cross") echo -e "\e[31m✖ $message is not installed\e[0m" ;;
+                "blue") echo -e "\e[34m$message\e[0m" ;;
+                "yellow") echo -e "\e[33m$message\e[0m" ;;
+                "cyan") echo -e "\e[36m$message\e[0m" ;;
+                "green") echo -e "\e[32m$message\e[0m" ;;
+                "red") echo -e "\e[31m$message\e[0m" ;;
+                *) echo "$message" ;;
+            esac
+            ;;
+        "id")
+            case $status in
+                "check") echo -e "\e[32m✔ $message sudah terinstall\e[0m" ;;
+                "cross") echo -e "\e[31m✖ $message belum terinstall\e[0m" ;;
+                "blue") echo -e "\e[34m$message\e[0m" ;;
+                "yellow") echo -e "\e[33m$message\e[0m" ;;
+                "cyan") echo -e "\e[36m$message\e[0m" ;;
+                "green") echo -e "\e[32m$message\e[0m" ;;
+                "red") echo -e "\e[31m$message\e[0m" ;;
+                *) echo "$message" ;;
+            esac
+            ;;
+        "ru")
+            case $status in
+                "check") echo -e "\e[32m✔ $message уже установлен\e[0m" ;;
+                "cross") echo -e "\e[31m✖ $message не установлен\e[0m" ;;
+                "blue") echo -e "\e[34m$message\e[0m" ;;
+                "yellow") echo -e "\e[33m$message\e[0m" ;;
+                "cyan") echo -e "\e[36m$message\e[0m" ;;
+                "green") echo -e "\e[32m$message\e[0m" ;;
+                "red") echo -e "\e[31m$message\e[0m" ;;
+                *) echo "$message" ;;
+            esac
+            ;;
+        "zh")
+            case $status in
+                "check") echo -e "\e[32m✔ $message 已安装\e[0m" ;;
+                "cross") echo -e "\e[31m✖ $message 未安装\e[0m" ;;
+                "blue") echo -e "\e[34m$message\e[0m" ;;
+                "yellow") echo -e "\e[33m$message\e[0m" ;;
+                "cyan") echo -e "\e[36m$message\e[0m" ;;
+                "green") echo -e "\e[32m$message\e[0m" ;;
+                "red") echo -e "\e[31m$message\e[0m" ;;
+                *) echo "$message" ;;
+            esac
+            ;;
+        "tr")
+            case $status in
+                "check") echo -e "\e[32m✔ $message zaten kurulu\e[0m" ;;
+                "cross") echo -e "\e[31m✖ $message kurulu değil\e[0m" ;;
+                "blue") echo -e "\e[34m$message\e[0m" ;;
+                "yellow") echo -e "\e[33m$message\e[0m" ;;
+                "cyan") echo -e "\e[36m$message\e[0m" ;;
+                "green") echo -e "\e[32m$message\e[0m" ;;
+                "red") echo -e "\e[31m$message\e[0m" ;;
+                *) echo "$message" ;;
+            esac
+            ;;
+        "th")
+            case $status in
+                "check") echo -e "\e[32m✔ $message ถูกติดตั้งแล้ว\e[0m" ;;
+                "cross") echo -e "\e[31m✖ $message ยังไม่ได้ติดตั้ง\e[0m" ;;
+                "blue") echo -e "\e[34m$message\e[0m" ;;
+                "yellow") echo -e "\e[33m$message\e[0m" ;;
+                "cyan") echo -e "\e[36m$message\e[0m" ;;
+                "green") echo -e "\e[32m$message\e[0m" ;;
+                "red") echo -e "\e[31m$message\e[0m" ;;
+                *) echo "$message" ;;
+            esac
+            ;;
+        "alien")
+            case $status in
+                "check") echo -e "\e[32m✔ $message ⟟⌇ ⋉⏃⍀☌⏃⏁⟒⎅\e[0m" ;;
+                "cross") echo -e "\e[31m✖ $message ⟟⌇ ⋏⍜⏁ ⋉⏃⍀☌⏃⏁⟒⎅\e[0m" ;;
+                "blue") echo -e "\e[34m$message\e[0m" ;;
+                "yellow") echo -e "\e[33m$message\e[0m" ;;
+                "cyan") echo -e "\e[36m$message\e[0m" ;;
+                "green") echo -e "\e[32m$message\e[0m" ;;
+                "red") echo -e "\e[31m$message\e[0m" ;;
+                *) echo "$message" ;;
+            esac
+            ;;
     esac
 }
 
-# Menentukan opsi
-if [ "$1" == "upgrade" ]; then
-    MODE="upgrade"
-elif [ "$1" == "install-upgrade" ]; then
-    MODE="install-upgrade"
-else
-    print_message "Usage: $0 {upgrade|install-upgrade}" "red"
-    exit 1
-fi
-
-print_message "Starting system update and upgrade..." "blue"
-source ~/.bashrc
-
-# Update sistem
-if ! sudo apt-get update -y; then
-    print_message "Failed to update package list." "red"
-    exit 1
-fi
-
-if [ "$MODE" == "upgrade" ]; then
-    # Hanya upgrade paket yang sudah ada
-    if ! sudo apt-get upgrade -y; then
-        print_message "Failed to upgrade existing packages." "red"
-        exit 1
+check_dependency() {
+    local package=$1
+    if dpkg -s "$package" &> /dev/null; then
+        version=$(dpkg -s "$package" | grep Version | awk '{print $2}')
+        print_message "$package (version: $version)" "check"
+    else
+        print_message "$package" "cross"
+        missing_packages+=("$package")
     fi
-    print_message "System packages upgraded." "green"
-elif [ "$MODE" == "install-upgrade" ]; then
-    # Upgrade paket yang sudah ada
-    if ! sudo apt-get upgrade -y; then
-        print_message "Failed to upgrade existing packages." "red"
-        exit 1
+}
+
+check_python_dependency() {
+    local package=$1
+    if pip show "$package" &> /dev/null; then
+        version=$(pip show "$package" | grep Version | awk '{print $2}')
+        print_message "$package (version: $version)" "check"
+    else
+        print_message "$package" "cross"
+        missing_packages+=("$package")
     fi
-    print_message "System packages updated and upgraded." "green"
-    
-    # Daftar paket-paket yang akan diinstal
-    PACKAGES=(
-        build-essential curl python3 python3-pip
-        htop tmux vim git default-jdk maven gradle
-        virtualenv ansible terraform awscli azure-cli
-        kubectl minikube helm cmake nginx postgresql postgresql-contrib
-        mysql-server redis-server mongodb-org jq tree wget screen zip unzip
-        supervisor fish
-    )
-    
-    # Instal paket-paket
-    for pkg in "${PACKAGES[@]}"; do
-        if ! dpkg -l | grep -qw $pkg; then
-            if ! sudo apt-get install -y $pkg; then
-                print_message "Failed to install $pkg." "red"
-                exit 1
-            fi
-            print_message "$pkg installed." "green"
+}
+
+display_banner() {
+    curl -s https://raw.githubusercontent.com/naufalprtm/banner/refs/heads/main/banner.sh | bash
+}
+
+
+install_package() {
+    local package=$1
+    if ! dpkg -s "$package" &> /dev/null; then
+        print_message "Installing ${package}..." "cyan"
+        if ! sudo apt install "$package" -y; then
+            print_message "Error: Failed to install ${package}." "red"
+            return 1
         else
-            print_message "$pkg already installed. Upgrading if necessary." "yellow"
+            print_message "${package} has been installed successfully." "green"
+        fi
+    else
+        version=$(dpkg -s "$package" | grep Version | awk '{print $2}')
+        print_message "${package} is already installed (version: $version)." "yellow"
+    fi
+}
+
+install_pip_dependencies() {
+    for pip_package in "${pip_dependencies[@]}"; do
+        if ! pip show "$pip_package" > /dev/null 2>&1; then
+            print_message "Installing Python package $pip_package..." "blue"
+            pip install "$pip_package"
+            print_message "$pip_package installed successfully." "green"
+        else
+            print_message "Python package $pip_package is already installed." "check"
         fi
     done
+}
 
-    # Upgrade pip to the latest version
-    if ! pip install --upgrade pip; then
-        print_message "Failed to upgrade pip." "red"
-        exit 1
-    fi
-    print_message "Pip upgraded to the latest version." "green"
-
-    # List outdated pip packages and upgrade them
-    if ! pip list --outdated --format=columns | tail -n +3 | awk '{print $1}' | xargs -n1 pip install -U; then
-        print_message "Failed to upgrade outdated pip packages." "red"
-        exit 1
-    fi
-    print_message "Outdated pip packages upgraded." "green"
-
-    # Install atau upgrade Node.js
-    if ! curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -; then
-        print_message "Failed to set up Node.js." "red"
-        exit 1
-    fi
-    if ! sudo apt-get install -y nodejs; then
-        print_message "Failed to install Node.js." "red"
-        exit 1
-    fi
-    print_message "Node.js installed or upgraded." "green"
-
-    # Install atau upgrade Docker
-    if ! curl -fsSL https://get.docker.com -o get-docker.sh; then
-        print_message "Failed to download Docker installation script." "red"
-        exit 1
-    fi
-    if ! sudo sh get-docker.sh; then
-        print_message "Failed to install Docker." "red"
-        exit 1
-    fi
-    rm get-docker.sh
-    print_message "Docker installed or upgraded." "green"
-
-    # Install atau upgrade Docker Compose
-    DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
-    if ! sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose; then
-        print_message "Failed to download Docker Compose." "red"
-        exit 1
-    fi
-    if ! sudo chmod +x /usr/local/bin/docker-compose; then
-        print_message "Failed to set permissions for Docker Compose." "red"
-        exit 1
-    fi
-    print_message "Docker Compose installed or upgraded." "green"
-
-    # Install atau upgrade Poetry
-    if ! curl -sSL https://install.python-poetry.org | python3 -; then
-        print_message "Failed to install Poetry." "red"
-        exit 1
-    fi
-    print_message "Poetry installed or upgraded." "green"
-
-    # Install atau upgrade Rust
-    if ! curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
-        print_message "Failed to install Rust." "red"
-        exit 1
-    fi
-    source $HOME/.cargo/env
-    if ! rustup update; then
-        print_message "Failed to update Rust." "red"
-        exit 1
-    fi
-    print_message "Rust installed or upgraded." "green"
-
-    # Install atau upgrade Go
-    GO_VERSION=$(curl -s https://go.dev/VERSION?m=text)
-    if ! curl -LO "https://golang.org/dl/${GO_VERSION}.linux-amd64.tar.gz"; then
-        print_message "Failed to download Go." "red"
-        exit 1
-    fi
-    if ! sudo tar -C /usr/local -xzf "${GO_VERSION}.linux-amd64.tar.gz"; then
-        print_message "Failed to install Go." "red"
-        exit 1
-    fi
-    rm "${GO_VERSION}.linux-amd64.tar.gz"
-    echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.bashrc
-    source ~/.bashrc
-    print_message "Go installed or upgraded." "green"
-
-    # Install atau upgrade Helm
-    if ! curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash; then
-        print_message "Failed to install Helm." "red"
-        exit 1
-    fi
-    print_message "Helm installed or upgraded." "green"
-
-    # Install atau upgrade CMake
-    if ! sudo apt-get install -y cmake; then
-        print_message "Failed to install CMake." "red"
-        exit 1
-    fi
-    print_message "CMake installed or upgraded." "green"
-
-    # Install atau upgrade Minikube
-    if ! curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64; then
-        print_message "Failed to download Minikube." "red"
-        exit 1
-    fi
-    if ! sudo install minikube /usr/local/bin/; then
-        print_message "Failed to install Minikube." "red"
-        exit 1
-    fi
-    rm minikube
-    print_message "Minikube installed or upgraded." "green"
-
-    # Install atau upgrade Ansible
-    if ! sudo apt-get install -y ansible; then
-        print_message "Failed to install Ansible." "red"
-        exit 1
-    fi
-    print_message "Ansible installed or upgraded." "green"
-
-    # Install atau upgrade Terraform
-    if ! sudo apt-get install -y gnupg software-properties-common curl; then
-        print_message "Failed to install required packages for Terraform." "red"
-        exit 1
-    fi
-    if ! curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -; then
-        print_message "Failed to add HashiCorp GPG key." "red"
-        exit 1
-    fi
-    if ! sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"; then
-        print_message "Failed to add HashiCorp repository." "red"
-        exit 1
-    fi
-    if ! sudo apt-get update -y; then
-        print_message "Failed to update package list for Terraform." "red"
-        exit 1
-    fi
-    if ! sudo apt-get install -y terraform; then
-        print_message "Failed to install Terraform." "red"
-        exit 1
-    fi
-    print_message "Terraform installed or upgraded." "green"
-
-    # Install atau upgrade AWS CLI
-    if ! curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"; then
-        print_message "Failed to download AWS CLI." "red"
-        exit 1
-    fi
-    if ! unzip awscliv2.zip; then
-        print_message "Failed to unzip AWS CLI package." "red"
-        exit 1
-    fi
-    if ! sudo ./aws/install; then
-        print_message "Failed to install AWS CLI." "red"
-        exit 1
-    fi
-    rm -rf awscliv2.zip aws
-    print_message "AWS CLI installed or upgraded." "green"
-
-    # Install atau upgrade Azure CLI
-    if ! curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash; then
-        print_message "Failed to install Azure CLI." "red"
-        exit 1
-    fi
-    print_message "Azure CLI installed or upgraded." "green"
-
-    # Install atau upgrade Kubernetes kubectl
-    if ! curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"; then
-        print_message "Failed to download kubectl." "red"
-        exit 1
-    fi
-    if ! sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl; then
-        print_message "Failed to install kubectl." "red"
-        exit 1
-    fi
-    rm kubectl
-    print_message "Kubernetes kubectl installed or upgraded." "green"
-
-    # Install atau upgrade PostgreSQL
-    if ! sudo apt-get install -y postgresql postgresql-contrib; then
-        print_message "Failed to install PostgreSQL." "red"
-        exit 1
-    fi
-    print_message "PostgreSQL installed or upgraded." "green"
-
-    # Install atau upgrade MySQL
-    if ! sudo apt-get install -y mysql-server; then
-        print_message "Failed to install MySQL." "red"
-        exit 1
-    fi
-    print_message "MySQL installed or upgraded." "green"
-
-    # Install atau upgrade Redis
-    if ! sudo apt-get install -y redis-server; then
-        print_message "Failed to install Redis." "red"
-        exit 1
-    fi
-    print_message "Redis installed or upgraded." "green"
-
-    # Install atau upgrade MongoDB
-    if ! wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -; then
-        print_message "Failed to add MongoDB GPG key." "red"
-        exit 1
-    fi
-    if ! echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list; then
-        print_message "Failed to add MongoDB repository." "red"
-        exit 1
-    fi
-    if ! sudo apt-get update -y; then
-        print_message "Failed to update package list for MongoDB." "red"
-        exit 1
-    fi
-    if ! sudo apt-get install -y mongodb-org; then
-        print_message "Failed to install MongoDB." "red"
-        exit 1
-    fi
-    print_message "MongoDB installed or upgraded." "green"
-
-    # Install atau upgrade additional tools
-    ADDITIONAL_TOOLS=(
-        jq tree wget screen zip unzip supervisor fish
-    )
-    
-    for tool in "${ADDITIONAL_TOOLS[@]}"; do
-        if ! dpkg -l | grep -qw $tool; then
-            if ! sudo apt-get install -y $tool; then
-                print_message "Failed to install $tool." "red"
-                exit 1
-            fi
-            print_message "$tool installed." "green"
+remove_package() {
+    local package=$1
+    if dpkg -s "$package" &> /dev/null; then
+        print_message "Removing ${package}..." "cyan"
+        if ! sudo apt remove "$package" -y; then
+            print_message "Error: Failed to remove ${package}." "red"
+            return 1
         else
-            print_message "$tool already installed. Upgrading if necessary." "yellow"
+            print_message "${package} has been removed successfully." "green"
         fi
+    else
+        print_message "${package} is not installed." "yellow"
+    fi
+}
+
+display_system_info() {
+    echo -e "\n--- System Information ---"
+    echo "Operating System: $(lsb_release -d | awk -F: '{print $2}' | xargs)"
+    echo "Kernel Version: $(uname -r)"
+    echo "Architecture: $(uname -m)"
+    echo "Disk Usage:"
+    df -h --total | grep 'total' | awk '{print $3 "/" $2 " (" $5 " used)"}'
+    echo "Available Memory: $(free -h | awk '/^Mem:/{print $7}')"
+    echo "CPU Information: $(lscpu | grep 'Model name' | awk -F: '{print $2}' | xargs)"
+    echo -e "--------------------------\n"
+}
+
+
+change_language() {
+    echo "Select language:"
+    echo "1. Indonesian"
+    echo "2. English"
+    echo "3. Russian"
+    echo "4. Chinese"
+    echo "5. Turkish"
+    echo "6. Thai"
+    echo "7. Alien"
+    read -p "Enter your choice (1-7): " lang_choice
+
+    case $lang_choice in
+        1) LANGUAGE="id";;
+        2) LANGUAGE="en";;
+        3) LANGUAGE="ru";;
+        4) LANGUAGE="zh";;
+        5) LANGUAGE="tr";;
+        6) LANGUAGE="th";;
+        7) LANGUAGE="alien";;
+        *) print_message "Invalid choice." "red";;
+    esac
+    print_message "Language changed to ${LANGUAGE}." "green"
+
+
+    main_menu
+}
+install_and_check_viruses() {
+    print_message "Installing chkrootkit and rkhunter..." "cyan"
+    sudo apt install chkrootkit rkhunter -y
+
+    print_message "Running chkrootkit..." "blue"
+    sudo chkrootkit
+
+    print_message "Running rkhunter..." "blue"
+    sudo rkhunter --check
+}
+
+get_main_menu_options() {
+    case $LANGUAGE in
+        "en")
+            echo -e "1. Install all\n2. Install only what's needed (missing dependencies)\n3. Check updates\n4. Remove dependencies\n5. Install one specific package\n6. Change language\n7. Install and check for viruses\n8. Exit"
+            ;;
+        "id")
+            echo -e "1. Install semua\n2. Install hanya yang dibutuhkan (dependensi yang hilang)\n3. Periksa pembaruan\n4. Hapus dependensi\n5. Install satu paket tertentu\n6. Ganti bahasa\n7. Instal dan periksa virus\n8. Keluar"
+            ;;
+        "ru")
+            echo -e "1. Установить все\n2. Установить только необходимые (недостающие зависимости)\n3. Проверить обновления\n4. Удалить зависимости\n5. Установить один конкретный пакет\n6. Изменить язык\n7. Установить и проверить вирусы\n8. Выйти"
+            ;;
+        "zh")
+            echo -e "1. 安装所有\n2. 仅安装所需的（缺少的依赖项）\n3. 检查更新\n4. 删除依赖项\n5. 安装一个特定的软件包\n6. 更改语言\n7. 安装并检查病毒\n8. 退出"
+            ;;
+        "tr")
+            echo -e "1. Tümünü kur\n2. Sadece gerekli olanı kur (eksik bağımlılıklar)\n3. Güncellemeleri kontrol et\n4. Bağımlılıkları kaldır\n5. Bir özel paketi kur\n6. Dili değiştir\n7. Virüsleri kontrol et ve kur\n8. Çık"
+            ;;
+        "th")
+            echo -e "1. ติดตั้งทั้งหมด\n2. ติดตั้งเฉพาะที่จำเป็น (การพึ่งพาที่หายไป)\n3. ตรวจสอบการอัปเดต\n4. ลบการพึ่งพา\n5. ติดตั้งแพ็คเกจเฉพาะ\n6. เปลี่ยนภาษา\n7. ติดตั้งและตรวจสอบไวรัส\n8. ออกจากระบบ"
+            ;;
+        "alien")
+            echo -e "1. ⟟⋏⌇⏁⏃⌰⌰ ⏃⌰⌰\n2. ⟟⋏⌇⏁⏃⌰⌰ ⍜⋏⌰⊬ ⍙⊑⏃⏁'⌇ ⋏⟒⟒⎅⟟⎅ (⋔⟟⌇⌇⟟⋏☌ ⎅⟒⌿⟒⋏⎅⟒⋏☊⟟⟒⌇)\n3. ☊⊑⟒☊☍ ⋉⏃⍀☌⏃⏁⟒ ⎍⌿⎅⏃⏁⟒⌇\n4. ⍀⟒⋔⍜⎐⟒ ⋉⏃⍀☌⏃⏁⟒ ⎅⟒⌿⟒⋏⎅⟒⋏☊⟟⟒⌇\n5. ⋉⏃⍀☌⏃⏁⟒ ⍜⋏⟒ ⌇⌿⟒☊⟟⎎⟟☊ ⌿⏃☊☍⏃☌⟒\n6. ☊⊑⏃⋏☌⟒ ⋉⏃⍀☌⏃⏁⟒ ⌰⏃⋏☌⎍⏃☌⟒\n7. ⟒⌖⟟⏁\n8. ⏘⟟⏁⏀⏁⏖"
+            ;;
+    esac
+}
+
+main_menu() {
+    missing_packages=() 
+
+declare -a dependencies=(
+    "build-essential" "cmake" "gcc" "g++" "libssl-dev"
+    "curl" "wget" "git" "python3" "python3-pip" "poetry"
+    "nvidia-driver-560" "nvidia-cuda-toolkit" "nvidia-smi"
+    "golang" "rustc" "cargo" "solc" "geth" "bitcoind"
+    "docker.io" "docker-compose" "nodejs" "npm" "java" "maven"
+    "gradle" "ansible" "terraform" "awscli" "azure-cli"
+    "kubectl" "minikube" "helm" "nginx" "postgresql"
+    "mysql-server" "redis-server" "mongodb" "jq" "tree"
+    "screen" "zip" "unzip" "supervisor" "fish" "systemd"
+    "openssl" "net-tools" "vim" "nano" "htop"
+    "tmux" "postfix" "rsync" "git-lfs" "kafka"
+    "elasticsearch" "rabbitmq-server" "prometheus"
+    "grafana" "zsh" "xclip" "netcat" "iftop"
+    "tcpdump" "bpftrace" "sysstat" "apt-transport-https"
+    "software-properties-common" "python3-venv" "python3-dev"
+    "libffi-dev" "libyaml-dev" "libsqlite3-dev" "libjpeg-dev"
+    "libpng-dev" "libtiff-dev" "libpq-dev" "libxml2-dev"
+    "libxslt1-dev" "libcurl4-openssl-dev" "libboost-all-dev"
+    "rkhunter" "chkrootkit" 
+)
+
+declare -a pip_dependencies=(
+    "numpy" "pandas" "scikit-learn" "matplotlib" "seaborn"
+    "flask" "django" "fastapi" "requests" "beautifulsoup4"
+    "pytest" "pytest-cov" "black" "isort" "jupyter"
+    "tensorflow" "torch" "opencv-python" "Pillow" "scrapy"
+    "SQLAlchemy" "pyodbc" "psycopg2" "paramiko" "fabric"
+    "pydantic" "asyncio" "aiohttp" "geopy" "twilio"
+    "pytest-asyncio" "mypy" "sphinx" "notebook" "streamlit"
+    "dash" "plotly" "tensorflow-datasets" "keras" "transformers"
+    "torchvision" "nltk" "spacy" "flask-socketio" "pytest-html"
+)
+
+display_banner
+display_system_info
+print_message "Checking Python dependencies..." "blue"
+
+    echo "Checking Python dependencies..."
+    for pkg in "${pip_dependencies[@]}"; do
+    check_python_dependency "$pkg"
     done
-fi
 
-# Bersihkan
-if ! sudo apt-get autoremove -y; then
-    print_message "Failed to autoremove unnecessary packages." "red"
-    exit 1
-fi
-if ! sudo apt-get clean; then
-    print_message "Failed to clean up package cache." "red"
-    exit 1
-fi
+    print_message "Checking dependencies..." "blue"
+    for package in "${dependencies[@]}"; do
+        check_dependency "$package"
+    done
 
-print_message "All specified packages and tools have been processed successfully." "cyan"
+    if [ ${#missing_packages[@]} -gt 0 ]; then
+      print_message "Some dependencies are not installed." "yellow"
+      echo "Choose an option:"
+      get_main_menu_options  
+      read -p "Enter your choice (1-8): " choice
+
+        case $choice in
+            1)
+                print_message "Installing all dependencies..." "cyan"
+                sudo apt install "${dependencies[@]}" -y
+                ;;
+            2)
+                print_message "Installing only what's needed..." "cyan"
+                                sudo apt install "${missing_packages[@]}" -y
+                ;;
+            3)
+                print_message "Checking for updates for all packages..." "cyan"
+                sudo apt update
+                sudo apt list --upgradable
+                read -p "Updates available. Do you want to update? (y/n): " update_choice
+                if [ "$update_choice" == "y" ]; then
+                    sudo apt upgrade -y
+                else
+                    print_message "Update canceled." "yellow"
+                fi
+                ;;
+            4)
+                print_message "Select a dependency to remove:" "yellow"
+                for i in "${!dependencies[@]}"; do
+                    echo "$((i+1)). ${dependencies[$i]}"
+                done
+                read -p "Enter the number of the dependency to remove: " uninstall_choice
+
+                if [[ $uninstall_choice -gt 0 && $uninstall_choice -le ${#dependencies[@]} ]]; then
+                    selected_package="${dependencies[$((uninstall_choice-1))]}"
+                    remove_package "$selected_package"
+                else
+                    print_message "Invalid choice." "red"
+                fi
+                ;;
+            5)
+                print_message "Select one package to install:" "yellow"
+                for i in "${!missing_packages[@]}"; do
+                    echo "$((i+1)). ${missing_packages[$i]}"
+                done
+                read -p "Enter the number of the package to install: " package_choice
+
+                if [[ $package_choice -gt 0 && $package_choice -le ${#missing_packages[@]} ]]; then
+                    selected_package="${missing_packages[$((package_choice-1))]}"
+                    install_package "$selected_package"
+                else
+                    print_message "Invalid choice." "red"
+                fi
+                ;;
+            6)
+                change_language
+                ;;
+            7)
+                install_and_check_viruses
+                ;;
+            8)
+                print_message "Exiting..." "green"
+                exit 0
+                ;;
+            *)
+                print_message "Invalid choice." "red"
+                ;;
+        esac
+    else
+        print_message "All dependencies are installed!" "green"
+    fi
+
+    install_and_check_viruses
+
+    # Prompt to run the main menu again
+    read -p "Would you like to run the main menu again? (y/n): " repeat_choice
+    if [[ $repeat_choice =~ ^[Yy]$ ]]; then
+        main_menu
+    else
+        print_message "Exiting..." "yellow"
+        exit 0
+    fi
+}
+
+# Start the main menu
+main_menu
