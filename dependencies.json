@@ -1,0 +1,62 @@
+{
+    "dependencies": [
+        "build-essential", "cmake", "gcc", "g++", "libssl-dev",
+        "curl", "wget", "git", "python3", "python3-pip", "poetry",
+        "nvidia-driver-560", "nvidia-cuda-toolkit", "nvidia-smi",
+        "golang", "rustc", "cargo", "solc", "geth", "bitcoind",
+        "docker.io", "docker-compose", "nodejs", "npm", "java", "maven",
+        "gradle", "ansible", "terraform", "awscli", "azure-cli",
+        "kubectl", "minikube", "helm", "nginx", "postgresql",
+        "mysql-server", "redis-server", "mongodb", "jq", "tree",
+        "screen", "zip", "unzip", "supervisor", "fish", "systemd",
+        "openssl", "net-tools", "vim", "nano", "htop",
+        "tmux", "postfix", "rsync", "git-lfs", "kafka",
+        "elasticsearch", "rabbitmq-server", "prometheus",
+        "grafana", "zsh", "xclip", "netcat", "iftop",
+        "tcpdump", "bpftrace", "sysstat", "apt-transport-https",
+        "software-properties-common", "python3-venv", "python3-dev",
+        "libffi-dev", "libyaml-dev", "libsqlite3-dev", "libjpeg-dev",
+        "libpng-dev", "libtiff-dev", "libpq-dev", "libxml2-dev",
+        "libxslt1-dev", "libcurl4-openssl-dev", "libboost-all-dev",
+        "rkhunter", "chkrootkit"
+    ],
+    "pip_dependencies": [
+        "numpy", "pandas", "scikit-learn", "matplotlib", "seaborn",
+        "flask", "django", "fastapi", "requests", "beautifulsoup4",
+        "pytest", "pytest-cov", "black", "isort", "jupyter",
+        "tensorflow", "torch", "opencv-python", "Pillow", "scrapy",
+        "SQLAlchemy", "pyodbc", "psycopg2", "paramiko", "fabric",
+        "pydantic", "asyncio", "aiohttp", "geopy", "twilio",
+        "pytest-asyncio", "mypy", "sphinx", "notebook", "streamlit",
+        "dash", "plotly", "tensorflow-datasets", "keras", "transformers",
+        "torchvision", "nltk", "spacy", "flask-socketio", "pytest-html"
+    ],
+    "cargo_dependencies": [
+        "serde", "tokio", "actix-web", "rocket", "clap", "diesel",
+        "reqwest", "async-std", "hyper", "warp", "log", "env_logger",
+        "rand", "chrono", "futures", "regex", "serde_json",
+        "serde_yaml", "serde_derive", "toml", "csv", "bytes",
+        "lazy_static", "rayon", "thiserror", "anyhow", "itertools",
+        "crossbeam", "criterion", "indicatif", "async-trait", "structopt",
+        "serde_cbor", "tokio-tungstenite", "nalgebra", "image",
+        "rayon", "simple_logger", "slog", "failure", "flate2",
+        "num", "ndarray", "nalgebra", "petgraph", "glium",
+        "glium_text", "vulkano", "lyon", "rendy", "wgpu",
+        "gfx-hal", "quinn", "tracing", "tower", "prost", "tonic",
+        "tokio-postgres", "sqlite", "rusqlite", "sled", "slog-async"
+    ],
+    "cpp_dependencies": [
+        "boost", "eigen", "fmt", "spdlog", "opencv", "tbb", "gtest",
+        "abseil", "poco", "asio", "qt", "gflags", "protobuf",
+        "jsoncpp", "libcurl", "zlib", "openssl", "yaml-cpp",
+        "googletest", "nlohmann-json", "catch2", "range-v3", "cpprestsdk",
+        "cereal", "sqlite3", "gsl", "flatbuffers", "tinyxml2",
+        "tcmalloc", "folly", "grpc", "rocksdb", "leveldb", "glog",
+        "openmp", "thrust", "cuda", "ceres-solver", "bullet3",
+        "cgal", "glfw", "glad", "dear-imgui", "imgui-sfml", "assimp",
+        "glm", "pybind11", "tesseract", "openal-soft", "urdfdom",
+        "bullet", "gtsam", "eigen-unsupported", "hpx", "vulkan",
+        "vtk", "arrow", "parquet", "simdjson", "flatbuffers",
+        "tbb", "hdf5", "libarchive", "nanoflann", "libigl"
+    ]
+}

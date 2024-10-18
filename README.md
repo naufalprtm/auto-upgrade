@@ -4,7 +4,7 @@ This script is designed to update and upgrade various system packages and softwa
 
 ## Features
 
-- System package updates and upgrades (because stagnation is for ponds, not software)
+- **System package updates and upgrades** (because stagnation is for ponds, not software)
 - Installation and upgrading of:
   - Node.js (for all your asynchronous procrastination needs)
   - Docker (so you can pretend your containers are less of a mess than your life)
@@ -36,12 +36,12 @@ This script is designed to update and upgrade various system packages and softwa
   - zip and unzip (for your emotional baggage)
   - supervisor (because managing processes should feel like herding cats)
   - fish shell (for those who want their command line to be as colorful as their personalities)
-- System cleanup after installation (because nobody likes a cluttered system or a cluttered mind)
-- Network topology setup with:
+- **System cleanup after installation** (because nobody likes a cluttered system or a cluttered mind)
+- **Network topology setup** with:
   - IP addressing configuration (for when you want your devices to talk to each other, like they’re at a bar)
   - DHCP configuration (for when you want to let fate decide your IP addresses)
   - NAT setup (because everyone loves a good disguise)
-- Language options for user interface:
+- **Language options** for user interface:
   - English (default, for the majority of the civilized world)
   - Indonesian
   - Russian
@@ -49,6 +49,8 @@ This script is designed to update and upgrade various system packages and softwa
   - Turkish
   - Thai
   - Alien language option (for when you want to feel out of this world, because why not?)
+  
+- **Package version check**: Before installing packages, the script will check if they are already installed and up-to-date. No need to worry about breaking your system with redundant installs.
 
 ## Usage
 

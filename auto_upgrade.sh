@@ -95,7 +95,61 @@ print_message() {
                 *) echo "$message" ;;
             esac
             ;;
+        *)
+            echo -e "${RED}Language not supported. Using English.${NC}"
+            ;;
     esac
+}
+
+view_missing_packages() {
+    if [ ${#missing_packages[@]} -eq 0 ]; then
+        print_message "No missing packages detected." "green"
+    else
+        print_message "Missing packages:" "yellow"
+        for pkg in "${missing_packages[@]}"; do
+            echo "- $pkg"
+        done
+    fi
+}
+
+install_specific_pip() {
+    echo "Choose a Python package to install:"
+    for i in "${!pip_dependencies[@]}"; do
+        echo "$((i+1)). ${pip_dependencies[$i]}"
+    done
+    read -p "Enter the number of the package to install: " pip_choice
+    if [[ $pip_choice -gt 0 && $pip_choice -le ${#pip_dependencies[@]} ]]; then
+        pip_package="${pip_dependencies[$((pip_choice-1))]}"
+        if ! pip show "$pip_package" > /dev/null 2>&1; then
+            print_message "Installing $pip_package..." "blue"
+            pip install "$pip_package"
+            print_message "$pip_package installed successfully." "green"
+        else
+            print_message "$pip_package is already installed." "check"
+        fi
+    else
+        print_message "Invalid choice." "red"
+    fi
+}
+
+remove_specific_pip() {
+    echo "Choose a Python package to remove:"
+    for i in "${!pip_dependencies[@]}"; do
+        echo "$((i+1)). ${pip_dependencies[$i]}"
+    done
+    read -p "Enter the number of the package to remove: " pip_choice
+    if [[ $pip_choice -gt 0 && $pip_choice -le ${#pip_dependencies[@]} ]]; then
+        pip_package="${pip_dependencies[$((pip_choice-1))]}"
+        if pip show "$pip_package" > /dev/null 2>&1; then
+            print_message "Removing $pip_package..." "cyan"
+            pip uninstall -y "$pip_package"
+            print_message "$pip_package removed successfully." "green"
+        else
+            print_message "$pip_package is not installed." "cross"
+        fi
+    else
+        print_message "Invalid choice." "red"
+    fi
 }
 
 check_dependency() {
@@ -120,10 +174,127 @@ check_python_dependency() {
     fi
 }
 
-display_banner() {
-    curl -s https://raw.githubusercontent.com/naufalprtm/banner/refs/heads/main/banner.sh | bash
+check_cargo_dependency() {
+    local package=$1
+    if cargo install --list | grep "$package" &> /dev/null; then
+        print_message "$package" "check"
+    else
+        print_message "$package" "cross"
+        missing_packages+=("$package")
+    fi
 }
 
+check_cpp_dependency() {
+    local package=$1
+    if command -v "$package" &> /dev/null; then
+        print_message "$package" "check"
+    else
+        print_message "$package" "cross"
+        missing_packages+=("$package")
+    fi
+}
+
+menu_check_dependencies() {
+    echo -e "\n1. Dependencies\n2. Python Dependencies\n3. Cargo Dependencies\n4. C++ Dependencies"
+    read -p "Choose the type of dependencies to check: " dep_choice
+
+    case $dep_choice in
+        1) 
+            print_message "You selected Dependencies. The following will be checked:" "cyan"
+            for dep in "${dependencies[@]}"; do
+                echo "- $dep"
+            done
+            read -p "Do you want to check these dependencies? (y/n): " confirm
+            if [[ "$confirm" == "y" ]]; then
+                for dep in "${dependencies[@]}"; do
+                    check_dependency "$dep"
+                done
+            fi
+            ;;
+        2)
+            print_message "You selected Python Dependencies. The following will be checked:" "cyan"
+            for dep in "${pip_dependencies[@]}"; do
+                echo "- $dep"
+            done
+            read -p "Do you want to check these dependencies? (y/n): " confirm
+            if [[ "$confirm" == "y" ]]; then
+                for dep in "${pip_dependencies[@]}"; do
+                    check_python_dependency "$dep"
+                done
+            fi
+            ;;
+        3)
+            print_message "You selected Cargo Dependencies. The following will be checked:" "cyan"
+            for dep in "${cargo_dependencies[@]}"; do
+                echo "- $dep"
+            done
+            read -p "Do you want to check these dependencies? (y/n): " confirm
+            if [[ "$confirm" == "y" ]]; then
+                for dep in "${cargo_dependencies[@]}"; do
+                    check_cargo_dependency "$dep"
+                done
+            fi
+            ;;
+        4)
+            print_message "You selected C++ Dependencies. The following will be checked:" "cyan"
+            for dep in "${cpp_dependencies[@]}"; do
+                echo "- $dep"
+            done
+            read -p "Do you want to check these dependencies? (y/n): " confirm
+            if [[ "$confirm" == "y" ]]; then
+                for dep in "${cpp_dependencies[@]}"; do
+                    check_cpp_dependency "$dep"
+                done
+            fi
+            ;;
+        *)
+            print_message "Invalid choice" "red"
+            ;;
+    esac
+}
+install_and_check_viruses() {
+    print_message "Installing chkrootkit and rkhunter..." "cyan"
+    sudo apt install chkrootkit rkhunter -y
+
+    print_message "Running chkrootkit..." "blue"
+    sudo chkrootkit
+
+    print_message "Running rkhunter..." "blue"
+    sudo rkhunter --check
+}
+
+get_main_menu_options() {
+    case $LANGUAGE in
+        "en")
+            echo -e "1. Install all dependencies\n2. Install only missing dependencies\n3. Check updates\n4. Remove dependencies\n5. Install a specific package\n6. Install specific Python package\n7. Remove specific Python package\n8. View missing packages\n9. Change language\n10. Install and check for viruses\n11. Check dependencies\n000. Exit"
+            ;;
+        "id")
+            echo -e "1. Install semua\n2. Install hanya yang dibutuhkan (dependensi yang hilang)\n3. Periksa pembaruan\n4. Hapus dependensi\n5. Install satu paket tertentu\n6. Install paket Python tertentu\n7. Hapus paket Python tertentu\n8. Lihat paket yang hilang\n9. Ganti bahasa\n10. Install dan periksa virus\n11. Periksa dependensi\n000. Keluar"
+            ;;
+        "ru")
+            echo -e "1. Установить все\n2. Установить только необходимые (недостающие зависимости)\n3. Проверить обновления\n4. Удалить зависимости\n5. Установить один конкретный пакет\n6. Установить пакет Python\n7. Удалить пакет Python\n8. Просмотреть недостающие пакеты\n9. Изменить язык\n10. Установить и проверить вирусы\n11. Проверить зависимости\n000. Выйти"
+            ;;
+        "zh")
+            echo -e "1. 安装所有\n2. 仅安装所需的（缺少的依赖项）\n3. 检查更新\n4. 删除依赖项\n5. 安装一个特定的软件包\n6. 安装特定的 Python 包\n7. 删除特定的 Python 包\n8. 查看缺失的包\n9. 更改语言\n10. 安装并检查病毒\n11. 检查依赖项\n000. 退出"
+            ;;
+        "tr")
+            echo -e "1. Tümünü kur\n2. Sadece gerekli olanı kur (eksik bağımlılıklar)\n3. Güncellemeleri kontrol et\n4. Bağımlılıkları kaldır\n5. Bir özel paketi kur\n6. Belirli bir Python paketi kur\n7. Belirli bir Python paketini kaldır\n8. Eksik paketleri görüntüle\n9. Dili değiştir\n10. Virüsleri kur ve kontrol et\n11. Bağımlılıkları kontrol et\n000. Çık"
+            ;;
+        "th")
+            echo -e "1. ติดตั้งทั้งหมด\n2. ติดตั้งเฉพาะที่จำเป็น (การพึ่งพาที่หายไป)\n3. ตรวจสอบการอัปเดต\n4. ลบการพึ่งพา\n5. ติดตั้งแพ็คเกจเฉพาะ\n6. ติดตั้งแพ็คเกจ Python เฉพาะ\n7. ลบแพ็คเกจ Python เฉพาะ\n8. ดูแพ็คเกจที่หายไป\n9. เปลี่ยนภาษา\n10. ติดตั้งและตรวจสอบไวรัส\n11. ตรวจสอบการพึ่งพา\n000. ออกจากระบบ"
+            ;;
+        "alien")
+            echo -e "1. ⟟⋏⌇⏁⏃⌰⌰ ⏃⌰⌰\n2. ⟟⋏⌇⏁⏃⌰⌰ ⍜⋏⌰⊬ ⍙⊑⏃⏁'⌇ ⋏⟒⟒⎅⟟⎅ (⋔⟟⌇⌇⟟⋏☌ ⎅⟒⌿⟒⋏⎅⟒⋏☊⟟⟒⌇)\n3. ☊⊑⟒☊☍ ⋉⏃⍀☌⏃⏁⟒ ⎍⌿⎅⏃⏁⟒⌇\n4. ⍀⟒⋔⍜⎐⟒ ⋉⏃⍀☌⏃⏁⟒ ⎅⟒⌿⟒⋏⎅⟒⋏☊⟟⟒⌇\n5. ⋉⏃⍀☌⏃⏁⟒ ⍜⋏⟒ ⌇⌿⟒☊⟟⎎⟟☊ ⌿⏃☊☍⏃☌⟒\n6. ☊⊑⏃⋏☌⟒ ⋉⏃⍀☌⏃⏁⟒ ⌰⏃⋏☌⎍⏃☌⟒\n7. ⍀⟒⋔⍜⎐⟒ ⍙⊑⏃⏁⎅\n8. ⏘⟟⏁⏀⏁⏖\n9. ☊⊑⏃⋏☌⟒ ⌰⏃⋏☌⎍⏃☌⟒\n10. ⟟⋏⌇⏁⏃⌰⌰ ⏃⋏⎅ ☊⊑⟒☊☍ ⎎⍜⍀ ⎐⟟⍀⎍⌇⟒⌇\n11. ⟒⌖⟟⏁\n000. ⟒⌖⟟⏁"
+            ;;
+    esac
+}
+
+load_dependencies() {
+    dependencies=($(jq -r '.dependencies[]' dependencies.json))
+    pip_dependencies=($(jq -r '.pip_dependencies[]' dependencies.json))
+    cargo_dependencies=($(jq -r '.cargo_dependencies[]' dependencies.json))
+    cpp_dependencies=($(jq -r '.cpp_dependencies[]' dependencies.json))
+}
 
 install_package() {
     local package=$1
@@ -179,7 +350,9 @@ display_system_info() {
     echo "CPU Information: $(lscpu | grep 'Model name' | awk -F: '{print $2}' | xargs)"
     echo -e "--------------------------\n"
 }
-
+display_banner() {
+    curl -s https://raw.githubusercontent.com/naufalprtm/banner/refs/heads/main/banner.sh | bash
+}
 
 change_language() {
     echo "Select language:"
@@ -207,177 +380,77 @@ change_language() {
 
     main_menu
 }
-install_and_check_viruses() {
-    print_message "Installing chkrootkit and rkhunter..." "cyan"
-    sudo apt install chkrootkit rkhunter -y
-
-    print_message "Running chkrootkit..." "blue"
-    sudo chkrootkit
-
-    print_message "Running rkhunter..." "blue"
-    sudo rkhunter --check
-}
-
-get_main_menu_options() {
-    case $LANGUAGE in
-        "en")
-            echo -e "1. Install all\n2. Install only what's needed (missing dependencies)\n3. Check updates\n4. Remove dependencies\n5. Install one specific package\n6. Change language\n7. Install and check for viruses\n8. Exit"
-            ;;
-        "id")
-            echo -e "1. Install semua\n2. Install hanya yang dibutuhkan (dependensi yang hilang)\n3. Periksa pembaruan\n4. Hapus dependensi\n5. Install satu paket tertentu\n6. Ganti bahasa\n7. Instal dan periksa virus\n8. Keluar"
-            ;;
-        "ru")
-            echo -e "1. Установить все\n2. Установить только необходимые (недостающие зависимости)\n3. Проверить обновления\n4. Удалить зависимости\n5. Установить один конкретный пакет\n6. Изменить язык\n7. Установить и проверить вирусы\n8. Выйти"
-            ;;
-        "zh")
-            echo -e "1. 安装所有\n2. 仅安装所需的（缺少的依赖项）\n3. 检查更新\n4. 删除依赖项\n5. 安装一个特定的软件包\n6. 更改语言\n7. 安装并检查病毒\n8. 退出"
-            ;;
-        "tr")
-            echo -e "1. Tümünü kur\n2. Sadece gerekli olanı kur (eksik bağımlılıklar)\n3. Güncellemeleri kontrol et\n4. Bağımlılıkları kaldır\n5. Bir özel paketi kur\n6. Dili değiştir\n7. Virüsleri kontrol et ve kur\n8. Çık"
-            ;;
-        "th")
-            echo -e "1. ติดตั้งทั้งหมด\n2. ติดตั้งเฉพาะที่จำเป็น (การพึ่งพาที่หายไป)\n3. ตรวจสอบการอัปเดต\n4. ลบการพึ่งพา\n5. ติดตั้งแพ็คเกจเฉพาะ\n6. เปลี่ยนภาษา\n7. ติดตั้งและตรวจสอบไวรัส\n8. ออกจากระบบ"
-            ;;
-        "alien")
-            echo -e "1. ⟟⋏⌇⏁⏃⌰⌰ ⏃⌰⌰\n2. ⟟⋏⌇⏁⏃⌰⌰ ⍜⋏⌰⊬ ⍙⊑⏃⏁'⌇ ⋏⟒⟒⎅⟟⎅ (⋔⟟⌇⌇⟟⋏☌ ⎅⟒⌿⟒⋏⎅⟒⋏☊⟟⟒⌇)\n3. ☊⊑⟒☊☍ ⋉⏃⍀☌⏃⏁⟒ ⎍⌿⎅⏃⏁⟒⌇\n4. ⍀⟒⋔⍜⎐⟒ ⋉⏃⍀☌⏃⏁⟒ ⎅⟒⌿⟒⋏⎅⟒⋏☊⟟⟒⌇\n5. ⋉⏃⍀☌⏃⏁⟒ ⍜⋏⟒ ⌇⌿⟒☊⟟⎎⟟☊ ⌿⏃☊☍⏃☌⟒\n6. ☊⊑⏃⋏☌⟒ ⋉⏃⍀☌⏃⏁⟒ ⌰⏃⋏☌⎍⏃☌⟒\n7. ⟒⌖⟟⏁\n8. ⏘⟟⏁⏀⏁⏖"
-            ;;
-    esac
-}
 
 main_menu() {
-    missing_packages=() 
-
-declare -a dependencies=(
-    "build-essential" "cmake" "gcc" "g++" "libssl-dev"
-    "curl" "wget" "git" "python3" "python3-pip" "poetry"
-    "nvidia-driver-560" "nvidia-cuda-toolkit" "nvidia-smi"
-    "golang" "rustc" "cargo" "solc" "geth" "bitcoind"
-    "docker.io" "docker-compose" "nodejs" "npm" "java" "maven"
-    "gradle" "ansible" "terraform" "awscli" "azure-cli"
-    "kubectl" "minikube" "helm" "nginx" "postgresql"
-    "mysql-server" "redis-server" "mongodb" "jq" "tree"
-    "screen" "zip" "unzip" "supervisor" "fish" "systemd"
-    "openssl" "net-tools" "vim" "nano" "htop"
-    "tmux" "postfix" "rsync" "git-lfs" "kafka"
-    "elasticsearch" "rabbitmq-server" "prometheus"
-    "grafana" "zsh" "xclip" "netcat" "iftop"
-    "tcpdump" "bpftrace" "sysstat" "apt-transport-https"
-    "software-properties-common" "python3-venv" "python3-dev"
-    "libffi-dev" "libyaml-dev" "libsqlite3-dev" "libjpeg-dev"
-    "libpng-dev" "libtiff-dev" "libpq-dev" "libxml2-dev"
-    "libxslt1-dev" "libcurl4-openssl-dev" "libboost-all-dev"
-    "rkhunter" "chkrootkit" 
-)
-
-declare -a pip_dependencies=(
-    "numpy" "pandas" "scikit-learn" "matplotlib" "seaborn"
-    "flask" "django" "fastapi" "requests" "beautifulsoup4"
-    "pytest" "pytest-cov" "black" "isort" "jupyter"
-    "tensorflow" "torch" "opencv-python" "Pillow" "scrapy"
-    "SQLAlchemy" "pyodbc" "psycopg2" "paramiko" "fabric"
-    "pydantic" "asyncio" "aiohttp" "geopy" "twilio"
-    "pytest-asyncio" "mypy" "sphinx" "notebook" "streamlit"
-    "dash" "plotly" "tensorflow-datasets" "keras" "transformers"
-    "torchvision" "nltk" "spacy" "flask-socketio" "pytest-html"
-)
-
-display_banner
-display_system_info
-print_message "Checking Python dependencies..." "blue"
-
-    echo "Checking Python dependencies..."
-    for pkg in "${pip_dependencies[@]}"; do
-    check_python_dependency "$pkg"
-    done
-
-    print_message "Checking dependencies..." "blue"
-    for package in "${dependencies[@]}"; do
-        check_dependency "$package"
-    done
-
-    if [ ${#missing_packages[@]} -gt 0 ]; then
-      print_message "Some dependencies are not installed." "yellow"
-      echo "Choose an option:"
-      get_main_menu_options  
-      read -p "Enter your choice (1-8): " choice
-
+    # Present the main menu options based on the current language setting
+    while true; do
+        display_banner
+        display_system_info
+        get_main_menu_options
+        read -p "Enter your choice: " choice
+        
         case $choice in
             1)
-                print_message "Installing all dependencies..." "cyan"
-                sudo apt install "${dependencies[@]}" -y
+                # Install all dependencies
+                for pkg in "${dependencies[@]}"; do
+                    install_package "$pkg"
+                done
                 ;;
             2)
-                print_message "Installing only what's needed..." "cyan"
-                                sudo apt install "${missing_packages[@]}" -y
+                # Install only missing dependencies
+                for pkg in "${missing_packages[@]}"; do
+                    install_package "$pkg"
+                done
                 ;;
             3)
-                print_message "Checking for updates for all packages..." "cyan"
+                # Check for updates
+                print_message "Updating package lists..." "cyan"
                 sudo apt update
-                sudo apt list --upgradable
-                read -p "Updates available. Do you want to update? (y/n): " update_choice
-                if [ "$update_choice" == "y" ]; then
-                    sudo apt upgrade -y
-                else
-                    print_message "Update canceled." "yellow"
-                fi
                 ;;
             4)
-                print_message "Select a dependency to remove:" "yellow"
-                for i in "${!dependencies[@]}"; do
-                    echo "$((i+1)). ${dependencies[$i]}"
+                # Remove dependencies
+                for pkg in "${dependencies[@]}"; do
+                    remove_package "$pkg"
                 done
-                read -p "Enter the number of the dependency to remove: " uninstall_choice
-
-                if [[ $uninstall_choice -gt 0 && $uninstall_choice -le ${#dependencies[@]} ]]; then
-                    selected_package="${dependencies[$((uninstall_choice-1))]}"
-                    remove_package "$selected_package"
-                else
-                    print_message "Invalid choice." "red"
-                fi
                 ;;
             5)
-                print_message "Select one package to install:" "yellow"
-                for i in "${!missing_packages[@]}"; do
-                    echo "$((i+1)). ${missing_packages[$i]}"
-                done
-                read -p "Enter the number of the package to install: " package_choice
-
-                if [[ $package_choice -gt 0 && $package_choice -le ${#missing_packages[@]} ]]; then
-                    selected_package="${missing_packages[$((package_choice-1))]}"
-                    install_package "$selected_package"
-                else
-                    print_message "Invalid choice." "red"
-                fi
+                # Install a specific package
+                install_specific_pip
                 ;;
             6)
-                change_language
+                # Install specific Python package
+                install_specific_pip
                 ;;
             7)
-                install_and_check_viruses
+                # Remove specific Python package
+                remove_specific_pip
                 ;;
             8)
-                print_message "Exiting..." "green"
+                # View missing packages
+                view_missing_packages
+                ;;
+            9)
+                # Change language
+                change_language
+                ;;
+            10)
+                # Install and check for viruses
+                install_and_check_viruses
+                ;;
+            11)
+                 # Check dependencies
+                menu_check_dependencies
+                ;;
+            000)
+                print_message "Exiting the script. Goodbye!" "green"
                 exit 0
                 ;;
+
             *)
-                print_message "Invalid choice." "red"
+                print_message "Invalid choice, please select a valid option." "red"
                 ;;
         esac
-    else
-        print_message "All dependencies are installed!" "green"
-    fi
-
-    install_and_check_viruses
-
-    # Prompt to run the main menu again
-    read -p "Would you like to run the main menu again? (y/n): " repeat_choice
-    if [[ $repeat_choice =~ ^[Yy]$ ]]; then
-        main_menu
-    else
-        print_message "Exiting..." "yellow"
-        exit 0
-    fi
+    done
 }
 
-# Start the main menu
 main_menu
